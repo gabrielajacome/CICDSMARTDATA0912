@@ -1,0 +1,140 @@
+{
+  "datasets": [
+    {
+      "name": "2a9b2f32",
+      "displayName": "Complete Catalog Data Extract",
+      "queryLines": [
+        "select * from catalog_smartdata.golden.kpi_cliente_propas_ingreso\r\n",
+        "where\r\n",
+        "Producto is not null"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "e310e517",
+      "displayName": "Untitled page",
+      "layout": [
+        {
+          "widget": {
+            "name": "table-of-producto-data",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "2a9b2f32",
+                  "fields": [
+                    {
+                      "name": "sum(CantidadClientes)",
+                      "expression": "SUM(`CantidadClientes`)"
+                    },
+                    {
+                      "name": "PerfilIngreso",
+                      "expression": "`PerfilIngreso`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "sum(CantidadClientes)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Producto vs Perfil Ingreso"
+                },
+                "color": {
+                  "fieldName": "PerfilIngreso",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "label": {
+                  "show": true
+                },
+                "extra": [
+                  {
+                    "fieldName": "PerfilIngreso"
+                  }
+                ]
+              },
+              "frame": {
+                "title": "",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 5,
+            "height": 8
+          }
+        },
+        {
+          "widget": {
+            "name": "producto1",
+            "queries": [
+              {
+                "name": "dashboards/01f0f0d0908010b8a567a33cbd9963b2/datasets/01f0f0d0988e1a7ba011b140e6118967_Producto",
+                "query": {
+                  "datasetName": "2a9b2f32",
+                  "fields": [
+                    {
+                      "name": "Producto",
+                      "expression": "`Producto`"
+                    },
+                    {
+                      "name": "Producto_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "Producto",
+                    "queryName": "dashboards/01f0f0d0908010b8a567a33cbd9963b2/datasets/01f0f0d0988e1a7ba011b140e6118967_Producto"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Producto"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 4,
+            "height": 1
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    },
+    {
+      "name": "294aae22",
+      "displayName": "Global Filters",
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}

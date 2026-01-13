@@ -1,0 +1,76 @@
+resources:
+  jobs:
+    New_Job_Jan_10_2026_05_02_PM:
+      name: New Job Jan 10, 2026, 05:02 PM
+      tasks:
+        - task_key: Preparacion_Ambiente
+          notebook_task:
+            notebook_path: /Workspace/Users/gabyjacome_hotmail.com#ext#@gabyjacomehotmail534.onmicrosoft.com/CICDSMARTDATA0912/Scripts/(Clone)
+              Preparacion_Ambiente
+            base_parameters:
+              storageName: adlsmartdata0912
+            source: WORKSPACE
+          existing_cluster_id: 1217-025500-a10r8mps
+        - task_key: Ingesta_cliente
+          depends_on:
+            - task_key: Preparacion_Ambiente
+          notebook_task:
+            notebook_path: /Workspace/Users/gabyjacome_hotmail.com#ext#@gabyjacomehotmail534.onmicrosoft.com/CICDSMARTDATA0912/Process/ingesta_cliente
+            base_parameters:
+              4_schema: bronze
+            source: WORKSPACE
+          environment_key: Ingesta_environment
+        - task_key: ingesta_activo
+          depends_on:
+            - task_key: Preparacion_Ambiente
+          notebook_task:
+            notebook_path: /Workspace/Users/gabyjacome_hotmail.com#ext#@gabyjacomehotmail534.onmicrosoft.com/CICDSMARTDATA0912/Process/ingesta_activo
+            base_parameters:
+              4_schema: bronze
+            source: WORKSPACE
+          existing_cluster_id: 1217-025500-a10r8mps
+        - task_key: ingesta_pasivo
+          depends_on:
+            - task_key: Preparacion_Ambiente
+          notebook_task:
+            notebook_path: /Workspace/Users/gabyjacome_hotmail.com#ext#@gabyjacomehotmail534.onmicrosoft.com/CICDSMARTDATA0912/Process/ingesta_pasivo
+            base_parameters:
+              4_schema: bronze
+            source: WORKSPACE
+          existing_cluster_id: 1217-025500-a10r8mps
+        - task_key: transformacion
+          depends_on:
+            - task_key: Ingesta_cliente
+            - task_key: ingesta_activo
+            - task_key: ingesta_pasivo
+          notebook_task:
+            notebook_path: /Workspace/Users/gabyjacome_hotmail.com#ext#@gabyjacomehotmail534.onmicrosoft.com/CICDSMARTDATA0912/Process/transformacion
+            base_parameters:
+              4_schema: bronze
+              5_schema: silver
+            source: WORKSPACE
+          existing_cluster_id: 1217-025500-a10r8mps
+        - task_key: carga
+          depends_on:
+            - task_key: transformacion
+          notebook_task:
+            notebook_path: /Workspace/Users/gabyjacome_hotmail.com#ext#@gabyjacomehotmail534.onmicrosoft.com/CICDSMARTDATA0912/Process/load
+            base_parameters:
+              4_schema: silver
+              5_schema: golden
+            source: WORKSPACE
+          existing_cluster_id: 1217-025500-a10r8mps
+      queue:
+        enabled: true
+      parameters:
+        - name: 1_storageName
+          default: adlsmartdata0912
+        - name: 2_container
+          default: bronze
+        - name: 3_catalog
+          default: catalog_smartdata
+      environments:
+        - environment_key: Ingesta_environment
+          spec:
+            environment_version: "4"
+      performance_target: PERFORMANCE_OPTIMIZED
